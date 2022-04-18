@@ -10,6 +10,31 @@ library AppConstants{
     uint256 constant _ENTERED = 2;
 }
 
+
+    // We'll hold our character's attributes in a struct.    
+    struct CharacterAttributes {
+        uint characterIndex;
+        string name;
+        string imageURI;        
+        uint hp;
+        uint maxHp;
+        uint attackDamage;
+    }
+
+    // We create a struct to keep track of bigBoss's attributes
+    struct BigBoss {
+        string name;
+        string imageURI;
+        uint hp;
+        uint maxHp;
+        uint attackDamage;
+    }
+
+
+
+
+
+
 struct AppStorage {
     //ERC721
     string _name;
@@ -26,6 +51,25 @@ struct AppStorage {
     //ERC721URIStorage
     mapping(uint256 => string) _tokenURIs;//not used
 
+    // The tokenId is the NFTs unique identifier, it's just a number that goes
+    // 0, 1, 2, 3, etc.
+    uint256 totalTokens;
+    uint256 _tokenIds;
+    
+    // This array help us hold the default data for our characters.
+    // This will be helpful when we mint new characters and need to know things like their HP, AD, etc.
+    CharacterAttributes[] defaultCharacters;  
+    // We create a mapping from the nft's tokenId => that NFTs attributes.
+    mapping(uint256 => CharacterAttributes) nftHolderAttributes;
+    // bigBoss is the Bad Guy that our Heroes Fight against
+    BigBoss bigBoss;
+    // A mapping from an address => the NFTs tokenId. Gives me an ez way
+    // to store the owner of the NFT and reference it later.
+    mapping(address => uint256) nftHolders;
+    // A fee to mint the Characterrs. 
+    uint256 fee;
+    uint256 _status;
+
     uint256 isSaleStarted;
     string baseUri;
 
@@ -33,28 +77,6 @@ struct AppStorage {
     mapping(address => uint256) totalLockedValueByAddress;
     uint256 totalLockedValue;
 
-    // mapping(uint256 => IMarketPlace.MarketData) Market;
-    address payable feeReceiver;
-    uint256 feePercentage;
-    uint32 isRentStarted;
-    uint32 isMarketStarted;
-
-    uint32 limitMinDaysToRent;
-    uint32 limitMaxDaysToRent;
-    uint32 limitMinDaysBeforeRentCancel;
-    uint32 limitMaxDaysForRent;
-    uint256 _status;
-    uint256 reflectionBalance;
-    uint256 totalDividend;
-    mapping(uint256 => uint256) lastDividendAt;
-    uint256 reflectionPercentage;
-    uint256 currentReflectionBalance;
-
-    //pixel group id to marketdata
-    // mapping(uint256 => IMarketPlace.MarketDataV2) MarketV2;
-    //pixel id to pixel group
-    mapping(uint256 => uint256) MarketV2Pixel;
-    uint256 creatorBalance;
 }
 
 library LibAppStorage {
