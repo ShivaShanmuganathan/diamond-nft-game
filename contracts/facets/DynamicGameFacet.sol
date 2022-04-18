@@ -11,8 +11,7 @@ import {LibERC721} from "../libraries/LibERC721.sol";
 import "../libraries/Base64.sol";
 
 // Helper functions OpenZeppelin provides.
-import "@openzeppelin/contracts/utils/Counters.sol";
-import "@openzeppelin/contracts/utils/Strings.sol";
+
 import "../tokens/ERC721Diamond.sol";
 import "../libraries/LibDiamond.sol";
 import {CharacterAttributes, BigBoss} from "../libraries/LibAppStorage.sol";
@@ -37,45 +36,45 @@ contract DynamicGameFacet is ERC721Diamond {
 
   // Data is passed in to the contract when it's first created initializing the characters.
   // We're going to actually pass these values in from from run.js.
-    function init(
-      string[] memory characterNames,
-      string[] memory characterImageURIs,
-      uint[] memory characterHp,
-      uint[] memory characterAttackDmg,
-      string memory bossName, 
-      string memory bossImageURI,
-      uint bossHp,
-      uint bossAttackDamage
-    ) external {
-        LibDiamond.enforceIsContractOwner();
-        s._name = "Heroes";
-        s._symbol = "HERO";
+    // function init(
+    //   string[] memory characterNames,
+    //   string[] memory characterImageURIs,
+    //   uint[] memory characterHp,
+    //   uint[] memory characterAttackDmg,
+    //   string memory bossName, 
+    //   string memory bossImageURI,
+    //   uint bossHp,
+    //   uint bossAttackDamage
+    // ) external {
+    //     LibDiamond.enforceIsContractOwner();
+    //     s._name = "Heroes";
+    //     s._symbol = "HERO";
 
-        s.bigBoss = BigBoss({
-          name: bossName,
-          imageURI: bossImageURI,
-          hp: bossHp,
-          maxHp: bossHp,
-          attackDamage: bossAttackDamage
-        });
+    //     s.bigBoss = BigBoss({
+    //       name: bossName,
+    //       imageURI: bossImageURI,
+    //       hp: bossHp,
+    //       maxHp: bossHp,
+    //       attackDamage: bossAttackDamage
+    //     });
 
-        for(uint i = 0; i < characterNames.length; i += 1) {
+    //     for(uint i = 0; i < characterNames.length; i += 1) {
 
-          s.defaultCharacters.push(CharacterAttributes({
-            characterIndex: i,
-            name: characterNames[i],
-            imageURI: characterImageURIs[i],
-            hp: characterHp[i],
-            maxHp: characterHp[i],
-            attackDamage: characterAttackDmg[i]
-          }));
+    //       s.defaultCharacters.push(CharacterAttributes({
+    //         characterIndex: i,
+    //         name: characterNames[i],
+    //         imageURI: characterImageURIs[i],
+    //         hp: characterHp[i],
+    //         maxHp: characterHp[i],
+    //         attackDamage: characterAttackDmg[i]
+    //       }));
 
-        }
+    //     }
 
-        s._tokenIds += 1;
-        s.fee = 0.01 ether;
+    //     s._tokenIds += 1;
+    //     s.fee = 0.01 ether;
 
-    }
+    // }
 
 
   

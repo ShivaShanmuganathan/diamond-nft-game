@@ -9,7 +9,20 @@ const {
 
 const { deployDiamond } = require('../scripts/deploy.js')
 
-const { assert } = require('chai')
+const { assert, expect } = require('chai')
+
+
+
+const transformCharacterData = (characterData) => {
+  return {
+    name: characterData.name,
+    imageURI: characterData.imageURI,
+    hp: characterData.hp.toNumber(),
+    maxHp: characterData.maxHp.toNumber(),
+    attackDamage: characterData.attackDamage.toNumber(),
+    
+  };
+};
 
 describe('DiamondTest', async function () {
   let diamondAddress
@@ -246,4 +259,47 @@ describe('DiamondTest', async function () {
     assert.sameMembers(facets[findAddressPositionInFacets(addresses[3], facets)][1], getSelectors(Test1Facet))
     assert.sameMembers(facets[findAddressPositionInFacets(addresses[4], facets)][1], getSelectors(Test2Facet))
   })
+
+
+  it('should add dynamic game facet', async () => {
+
+    const DynamicGameFacet = await ethers.getContractFactory('DynamicGameFacet')
+    const dynamicGameFacet = await DynamicGameFacet.deploy()
+
+    // let facetB = await FacetB.deployed();
+    let selectors = getSelectors(dynamicGameFacet);
+    selectors = selectors.remove(['supportsInterface'])
+    let addresses = [];
+    addresses.push(dynamicGameFacet.address);
+    
+    await diamondCutFacet.diamondCut([[dynamicGameFacet.address, FacetCutAction.Add, selectors]], ethers.constants.AddressZero, '0x');
+
+    // let diamondLoupeFacet = await DiamondLoupeFacet.at(diamond.address);
+    result = await diamondLoupeFacet.facetFunctionSelectors(addresses[0]);
+    assert.sameMembers(result, selectors)
+
+  })
+
+
+  it('should check dynamic game facet constructor args', async () => { 
+
+    const dynamicGameFacet = await ethers.getContractAt('DynamicGameFacet', diamondAddress)
+    let bossTxn = await dynamicGameFacet.getBigBoss();
+    let result = transformCharacterData(bossTxn);
+
+    expect(result.name).to.equal("Thanos: The Mad Titan");
+    expect((result.hp).toString()).to.equal("10000");
+    expect((result.maxHp).toString()).to.equal("10000");
+    expect((result.attackDamage).toString()).to.equal("50");
+
+
+  })
+
+
+
+
+
+  
+
+
 })

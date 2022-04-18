@@ -32,14 +32,20 @@ async function deployDiamond () {
   console.log('Deploying facets')
   const FacetNames = [
     'DiamondLoupeFacet',
-    'OwnershipFacet'
+    'OwnershipFacet',
   ]
   const cut = []
   for (const FacetName of FacetNames) {
     const Facet = await ethers.getContractFactory(FacetName)
     const facet = await Facet.deploy()
     await facet.deployed()
+    
     console.log(`${FacetName} deployed: ${facet.address}`)
+
+    let functionSelectors = getSelectors(facet);
+    if (FacetName === 'DynamicGameFacet') {
+      functionSelectors = functionSelectors.remove(['supportsInterface']);
+    }
     cut.push({
       facetAddress: facet.address,
       action: FacetCutAction.Add,
@@ -54,7 +60,16 @@ async function deployDiamond () {
   let tx
   let receipt
   // call to init function
-  let functionCall = diamondInit.interface.encodeFunctionData('init')
+  let functionCall = diamondInit.interface.encodeFunctionData('init', [["Raze", "Phoenix", "Sage"],       
+  ["QmYGgUYWA8pNrjYopSD5yf4cVGNUibWSvg3hgC3RitF2qB", 
+  "QmPWXBPUEoPkMX3fQtQY1Jwjkmn4p9qVdcMQvhy42wkqMD", 
+  "QmbsoshH2rPYgEdSJZWHQBkHn9YSDSZVsKALgmVHSDK7LM"],
+  [100, 200, 400],                    
+  [100, 50, 25],                      
+  "Thanos: The Mad Titan", 
+  "https://i.pinimg.com/564x/8a/b9/0e/8ab90eff3e1830f20dfa7990fa905afb.jpg",
+  10000, 
+  50 ])
   tx = await diamondCut.diamondCut(cut, diamondInit.address, functionCall)
   console.log('Diamond cut tx: ', tx.hash)
   receipt = await tx.wait()
