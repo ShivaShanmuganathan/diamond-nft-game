@@ -2,7 +2,7 @@
 pragma solidity ^0.8.1;
 
 // IERC721 Interface Contract 📃 to inherit from.
-// import {IERC721} from "../interfaces/IERC721.sol";
+import {LibERC721} from "../libraries/LibERC721.sol";
 
 // NFT contract to inherit from.
 // import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
@@ -13,71 +13,13 @@ import "../libraries/Base64.sol";
 // Helper functions OpenZeppelin provides.
 import "@openzeppelin/contracts/utils/Counters.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";
-
-// Access Control Function
-import "@openzeppelin/contracts/access/Ownable.sol";
+import "../tokens/ERC721Diamond.sol";
+import "../libraries/LibDiamond.sol";
+import {CharacterAttributes, BigBoss} from "../libraries/LibAppStorage.sol";
 
 // Makes Debugging Easy
 import "hardhat/console.sol";
 
-
-library DynamicGameStorage {
-
-    // We'll hold our character's attributes in a struct.    
-    struct CharacterAttributes {
-        uint characterIndex;
-        string name;
-        string imageURI;        
-        uint hp;
-        uint maxHp;
-        uint attackDamage;
-    }
-
-    // We create a struct to keep track of bigBoss's attributes
-    struct BigBoss {
-        string name;
-        string imageURI;
-        uint hp;
-        uint maxHp;
-        uint attackDamage;
-    }
-
-    // This struct contains state variables we care about.
-    struct DiamondStorage {
-        // The tokenId is the NFTs unique identifier, it's just a number that goes
-        // 0, 1, 2, 3, etc.
-        uint256 totalTokens;
-        uint256 _tokenIds;
-        // This array help us hold the default data for our characters.
-        // This will be helpful when we mint new characters and need to know things like their HP, AD, etc.
-        CharacterAttributes[] defaultCharacters;  
-        // We create a mapping from the nft's tokenId => that NFTs attributes.
-        mapping(uint256 => CharacterAttributes) nftHolderAttributes;
-        // bigBoss is the Bad Guy that our Heroes Fight against
-        BigBoss bigBoss;
-        // A mapping from an address => the NFTs tokenId. Gives me an ez way
-        // to store the owner of the NFT and reference it later.
-        mapping(address => uint256) nftHolders;
-        // A fee to mint the Characterrs. 
-        uint256 fee;
-        
-    }
-
-
-
-    // Returns the struct from a specified position in contract storage
-    // ds is short for DiamondStorage
-    function diamondStorage() internal pure returns(DiamondStorage storage ds) {
-        // Specifies a random position from a hash of a string
-        bytes32 storagePosition = keccak256("Dynamic.NFT.Mini.Game.Diamond.Storage");
-        // Set the position of our struct in contract storage
-        assembly {
-        ds.slot := storagePosition
-        }
-    }
-
-
-}
 
 
 
@@ -85,45 +27,18 @@ library DynamicGameStorage {
 /// @author Shiva Shanmuganathan
 /// @notice You can use this contract for implementing a simple NFT based game to change NFT Metadata
 /// @dev All function calls are currently implemented without side effects
-contract DynamicGameFacet is Ownable{
+contract DynamicGameFacet is ERC721Diamond {
 
-    // We'll hold our character's attributes in a struct.    
-    // struct CharacterAttributes {
-    //     uint characterIndex;
-    //     string name;
-    //     string imageURI;        
-    //     uint hp;
-    //     uint maxHp;
-    //     uint attackDamage;
-    // }
-
-    // We create a struct to keep track of bigBoss's attributes
-    // struct BigBoss {
-    //     string name;
-    //     string imageURI;
-    //     uint hp;
-    //     uint maxHp;
-    //     uint attackDamage;
-    // }
 
   // Events to show that a Minting & Attacking action has been completed 
-//   event CharacterNFTMinted(address sender, uint256 tokenId, uint256 characterIndex);
-//   event AttackComplete(uint newBossHp, uint newPlayerHp);
+  event CharacterNFTMinted(address sender, uint256 tokenId, uint256 characterIndex);
+  event AttackComplete(uint newBossHp, uint newPlayerHp);
 
 
   // Data is passed in to the contract when it's first created initializing the characters.
   // We're going to actually pass these values in from from run.js.
   
-  /// @notice initFacet function initializes the Boss & DefaultCharacter's Attributes
-  /// @dev TokenId is incremented to 1, so that 0th Token can be assigned for users that sell their Token
-  /// @param characterNames -> Gets All Default Character's Names as string array
-  /// @param characterImageURIs -> Gets All Default Character's ImageURI as string array
-  /// @param characterHp -> Gets All Default Character's Health as uint array. 
-  /// @param characterAttackDmg-> Gets All Default Character's Attack Damage as uint array. 
-  /// @param bossName -> Gets Boss name as string
-  /// @param bossImageURI -> Gets Boss imageURI as string
-  /// @param bossHp -> Gets Boss Hp as uint
-  /// @param bossAttackDamage -> Gets Boss AttackDamage as uint
+  
 //   function initFacet(// These new variables would be passed in via run.js or deploy.js.
 //     string[] memory characterNames,
 //     string[] memory characterImageURIs,
@@ -172,6 +87,57 @@ contract DynamicGameFacet is Ownable{
 //         ds.initialized = true;
 //     }
 
+    function init(
+      string[] memory characterNames,
+      string[] memory characterImageURIs,
+      uint[] memory characterHp,
+      uint[] memory characterAttackDmg,
+      string memory bossName, 
+      string memory bossImageURI,
+      uint bossHp,
+      uint bossAttackDamage
+    ) external {
+        LibDiamond.enforceIsContractOwner();
+        s._name = "Heroes";
+        s._symbol = "HERO";
+
+        s.bigBoss = BigBoss({
+          name: bossName,
+          imageURI: bossImageURI,
+          hp: bossHp,
+          maxHp: bossHp,
+          attackDamage: bossAttackDamage
+        });
+
+        for(uint i = 0; i < characterNames.length; i += 1) {
+
+          s.defaultCharacters.push(CharacterAttributes({
+            characterIndex: i,
+            name: characterNames[i],
+            imageURI: characterImageURIs[i],
+            hp: characterHp[i],
+            maxHp: characterHp[i],
+            attackDamage: characterAttackDmg[i]
+          }));
+
+        }
+
+        s._tokenIds += 1;
+        
+        // s.feeReceiver = payable(LibDiamond.contractOwner());
+        // s.feePercentage = 50;
+        // s.baseUri = "ipfs://QmbHmTshtpK3c9GfZkQkBjHbCGxPk7RkS6iviyJJjTEdjH/";
+        
+        // s.limitMinDaysToRent = 30;
+        // s.limitMaxDaysToRent = 30;
+        // s.limitMinDaysBeforeRentCancel = 10;
+        // s.limitMaxDaysForRent = 90;
+        // s._status = AppConstants._NOT_ENTERED;
+        // s.reflectionPercentage = 500;
+
+
+    }
+
 
   
 //     /// @notice Update Fee to mint the NFTs
@@ -179,13 +145,13 @@ contract DynamicGameFacet is Ownable{
 //     /// @param _fee The updated fee is passed by contract owner
 //     /// Ownable is used to verify the contract owner
 
-//     function updateFee(uint256 _fee) external onlyOwner {
+    // function updateFee(uint256 _fee) external onlyOwner {
 
-//         DynamicGameStorage.DiamondStorage storage ds = DynamicGameStorage.diamondStorage();
-//         require(ds.owner == msg.sender, "Only Owner Can Update Fee");
-//         ds.fee = _fee;
+    //     DynamicGameStorage.DiamondStorage storage ds = DynamicGameStorage.diamondStorage();
+    //     require(ds.owner == msg.sender, "Only Owner Can Update Fee");
+    //     ds.fee = _fee;
 
-//     }
+    // }
 
 
   /// @notice Mints the NFT of the selected character
