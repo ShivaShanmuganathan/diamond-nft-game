@@ -123,4 +123,44 @@ contract DynamicGameFacet is ERC721Diamond {
   }
 
 
+  /// @notice View Function that returns NFT Metadata of token as a string 
+  /// @dev The tokenURI function is overridden to get character attributes and return the  json object as string
+  /// @param _tokenId It is used to uniquely identify NFTs
+  /// @return Returns the encoded json object as string
+  /// @inheritdoc ERC721Diamond
+  function tokenURI(uint256 _tokenId) public view override returns (string memory) 
+  {
+    CharacterAttributes memory charAttributes = s.nftHolderAttributes[_tokenId];
+
+    string memory strHp = Strings.toString(charAttributes.hp);
+    string memory strMaxHp = Strings.toString(charAttributes.maxHp);
+    string memory strAttackDamage = Strings.toString(charAttributes.attackDamage);
+    
+    
+
+    string memory json = Base64.encode(
+      bytes(
+        string(
+          abi.encodePacked(
+            '{"name": "',
+            charAttributes.name,
+            ' -- NFT #: ',
+            Strings.toString(_tokenId),
+            '", "description": "An epic NFT", "image": "ipfs://',
+            charAttributes.imageURI,
+            '", "attributes": [ { "trait_type": "Health Points", "value": ',strHp,', "max_value":',strMaxHp,'}, { "trait_type": "Attack Damage", "value": ', strAttackDamage,'} ]}'
+            
+          )
+        )
+      )
+    );
+
+    string memory output = string(
+      abi.encodePacked("data:application/json;base64,", json)
+    );
+    
+    return output;
+  }
+
+
 }
