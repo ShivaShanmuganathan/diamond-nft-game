@@ -110,6 +110,34 @@ describe('DiamondTest', async function () {
     expect((result.maxHp).toString()).to.equal("10000");
     expect((result.attackDamage).toString()).to.equal("50");
 
+    const charactersTxn = await dynamicGameFacet.getAllDefaultCharacters();
+    const characters = charactersTxn.map((characterData) => transformCharacterData(characterData));
+    characters.forEach((character, index) => {
+    
+      if(index == 0){
+          expect(character.name).to.equal("Raze");
+          expect((character.hp).toString()).to.equal("100");
+          expect((character.maxHp).toString()).to.equal("100");
+          expect((character.attackDamage).toString()).to.equal("100");
+      }
+      
+      else if(index == 1){
+          expect(character.name).to.equal("Phoenix");
+          expect((character.hp).toString()).to.equal("200");
+          expect((character.maxHp).toString()).to.equal("200");
+          expect((character.attackDamage).toString()).to.equal("50");
+      }
+
+      else if(index == 2){
+          expect(character.name).to.equal("Sage");
+          expect((character.hp).toString()).to.equal("400");
+          expect((character.maxHp).toString()).to.equal("400");
+          expect((character.attackDamage).toString()).to.equal("25");
+      }
+    });
+
+    
+
   })
 
 
