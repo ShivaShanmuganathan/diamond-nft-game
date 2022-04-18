@@ -237,6 +237,15 @@ contract DynamicGameFacet is ERC721Diamond {
 
   }
 
+  /// @notice View function to get attributes of all default characters
+  /// @dev public view function that returns attributes of all default characters as struct
+  /// @return A struct containing the attributes of all default characters is returned
+  function getAllDefaultCharacters() public view returns (CharacterAttributes[] memory) {
+
+    return s.defaultCharacters;
+
+  }
+
 
 
 
