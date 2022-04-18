@@ -163,4 +163,50 @@ contract DynamicGameFacet is ERC721Diamond {
   }
 
 
+  /// @notice User with NFT can attack the Boss [Metadata Of NFT Changes Here]
+  /// @dev The Health of Boss & User's NFT is reduced becuase of attack. [Metadata Of NFT Changes Here]
+  /// The user's address is used to get the NFT the user owns
+  /// Health of Boss & Hero is reduced due to fight  
+  function attackBoss() public {
+    // Get the state of the player's NFT.
+    uint256 nftTokenIdOfPlayer = s.nftHolders[msg.sender];
+    CharacterAttributes storage player = s.nftHolderAttributes[nftTokenIdOfPlayer];
+    console.log("\nPlayer w/ character %s about to attack. Has %s HP and %s AD", player.name, player.hp, player.attackDamage);
+    console.log("Boss %s has %s HP and %s AD", s.bigBoss.name, s.bigBoss.hp, s.bigBoss.attackDamage);
+    // Make sure the player has more than 0 HP.
+    require (
+      player.hp > 0,
+      "Error: character must have HP to attack boss."
+    );
+
+    // Make sure the boss has more than 0 HP.
+    require (
+      s.bigBoss.hp > 0,
+      "Error: boss must have HP to attack boss."
+    );
+
+    // Allow player to attack boss.
+    if (s.bigBoss.hp < player.attackDamage) {
+      s.bigBoss.hp = 0;
+    } else {
+      s.bigBoss.hp = s.bigBoss.hp - player.attackDamage;
+    }
+
+    // Allow boss to attack player.
+    if (player.hp < s.bigBoss.attackDamage) {
+      player.hp = 0;
+    } else {
+      player.hp = player.hp - s.bigBoss.attackDamage;
+    }
+
+    // Console for ease.
+    console.log("%s attacked Boss. Boss hp: %s\n", player.name, s.bigBoss.hp);
+    console.log("Boss attacked %s. %s hp: %s\n", player.name, player.name ,player.hp);
+    emit AttackComplete(s.bigBoss.hp, player.hp);
+  }
+
+
+
+
+
 }
