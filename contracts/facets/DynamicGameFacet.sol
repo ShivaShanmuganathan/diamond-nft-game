@@ -36,47 +36,6 @@ contract DynamicGameFacet is ERC721Diamond {
 
   // Data is passed in to the contract when it's first created initializing the characters.
   // We're going to actually pass these values in from from run.js.
-    // function init(
-    //   string[] memory characterNames,
-    //   string[] memory characterImageURIs,
-    //   uint[] memory characterHp,
-    //   uint[] memory characterAttackDmg,
-    //   string memory bossName, 
-    //   string memory bossImageURI,
-    //   uint bossHp,
-    //   uint bossAttackDamage
-    // ) external {
-    //     LibDiamond.enforceIsContractOwner();
-    //     s._name = "Heroes";
-    //     s._symbol = "HERO";
-
-    //     s.bigBoss = BigBoss({
-    //       name: bossName,
-    //       imageURI: bossImageURI,
-    //       hp: bossHp,
-    //       maxHp: bossHp,
-    //       attackDamage: bossAttackDamage
-    //     });
-
-    //     for(uint i = 0; i < characterNames.length; i += 1) {
-
-    //       s.defaultCharacters.push(CharacterAttributes({
-    //         characterIndex: i,
-    //         name: characterNames[i],
-    //         imageURI: characterImageURIs[i],
-    //         hp: characterHp[i],
-    //         maxHp: characterHp[i],
-    //         attackDamage: characterAttackDmg[i]
-    //       }));
-
-    //     }
-
-    //     s._tokenIds += 1;
-    //     s.fee = 0.01 ether;
-
-    // }
-
-
   
 //     /// @notice Update Fee to mint the NFTs
 //     /// @dev Only the contract owner will be able to update the minting fee
