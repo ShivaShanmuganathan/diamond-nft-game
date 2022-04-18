@@ -206,6 +206,37 @@ contract DynamicGameFacet is ERC721Diamond {
   }
 
 
+    /// @notice Function to check whether user owns an NFT
+  /// @dev If the user has NFTs, Struct with Attributes of NFTs is returned 
+  /// @dev If not, empty struct is returned when user does not have any NFTs
+  /// @return A struct containing the Token's Attributes are returned 
+  /// The address of message sender is used to get the tokenId
+  //// The tokenId is then used to get the attributes of NFT 
+  function checkIfUserHasNFT() public view returns (CharacterAttributes memory) {
+
+    // Get the tokenId of the user's character NFT
+    uint256 nftTokenIdOfPlayer = s.nftHolders[msg.sender];
+
+    // Using tokenId to get Token Attributes
+    if (nftTokenIdOfPlayer > 0) {
+      return s.nftHolderAttributes[nftTokenIdOfPlayer];
+    }
+    else{
+      CharacterAttributes memory emptyStruct;
+      return emptyStruct;
+    }
+
+  }
+  
+  /// @notice View function to check the attributes of Boss
+  /// @dev public view function that returns attributes of boss as struct
+  /// @return A struct containing the attributes of Boss is returned
+  function getBigBoss() public view returns (BigBoss memory) {
+    
+    return s.bigBoss;
+
+  }
+
 
 
 
