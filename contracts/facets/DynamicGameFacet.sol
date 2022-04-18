@@ -37,56 +37,6 @@ contract DynamicGameFacet is ERC721Diamond {
 
   // Data is passed in to the contract when it's first created initializing the characters.
   // We're going to actually pass these values in from from run.js.
-  
-  
-//   function initFacet(// These new variables would be passed in via run.js or deploy.js.
-//     string[] memory characterNames,
-//     string[] memory characterImageURIs,
-//     uint[] memory characterHp,
-//     uint[] memory characterAttackDmg,
-//     string memory bossName, 
-//     string memory bossImageURI,
-//     uint bossHp,
-//     uint bossAttackDamage,
-//     uint _fee
-//     ) external {
-        
-//         DynamicGameStorage.DiamondStorage storage ds = DynamicGameStorage.diamondStorage();
-        
-//         ds.owner = msg.sender;
-//         require(!ds.initialized, "Already Initialize");
-
-//         // Initialize the boss as our "bigBoss" state variable.
-//         ds.bigBoss = BigBoss({
-//             name: bossName,
-//             imageURI: bossImageURI,
-//             hp: bossHp,
-//             maxHp: bossHp,
-//             attackDamage: bossAttackDamage
-//         });
-
-//         // console.log("Done initializing BOSS %s w/ HP %s, img %s", bigBoss.name, bigBoss.hp, bigBoss.imageURI);
-
-//         // Loop through all the characters, and save their values in our contract so
-//         // we can use them later when we mint our NFTs.
-//         for(uint i = 0; i < characterNames.length; i += 1) {
-
-//             ds.defaultCharacters.push(CharacterAttributes({
-//                 characterIndex: i,
-//                 name: characterNames[i],
-//                 imageURI: characterImageURIs[i],
-//                 hp: characterHp[i],
-//                 maxHp: characterHp[i],
-//                 attackDamage: characterAttackDmg[i]
-//             }));
-
-//         }
-
-//         ds._tokenIds += 1;
-//         ds.fee = _fee;
-//         ds.initialized = true;
-//     }
-
     function init(
       string[] memory characterNames,
       string[] memory characterImageURIs,
@@ -123,18 +73,7 @@ contract DynamicGameFacet is ERC721Diamond {
         }
 
         s._tokenIds += 1;
-        
-        // s.feeReceiver = payable(LibDiamond.contractOwner());
-        // s.feePercentage = 50;
-        // s.baseUri = "ipfs://QmbHmTshtpK3c9GfZkQkBjHbCGxPk7RkS6iviyJJjTEdjH/";
-        
-        // s.limitMinDaysToRent = 30;
-        // s.limitMaxDaysToRent = 30;
-        // s.limitMinDaysBeforeRentCancel = 10;
-        // s.limitMaxDaysForRent = 90;
-        // s._status = AppConstants._NOT_ENTERED;
-        // s.reflectionPercentage = 500;
-
+        s.fee = 0.01 ether;
 
     }
 
@@ -145,13 +84,12 @@ contract DynamicGameFacet is ERC721Diamond {
 //     /// @param _fee The updated fee is passed by contract owner
 //     /// Ownable is used to verify the contract owner
 
-    // function updateFee(uint256 _fee) external onlyOwner {
+    function updateFee(uint256 _fee) external {
 
-    //     DynamicGameStorage.DiamondStorage storage ds = DynamicGameStorage.diamondStorage();
-    //     require(ds.owner == msg.sender, "Only Owner Can Update Fee");
-    //     ds.fee = _fee;
+        LibDiamond.enforceIsContractOwner();
+        s.fee = _fee;
 
-    // }
+    }
 
 
   /// @notice Mints the NFT of the selected character
