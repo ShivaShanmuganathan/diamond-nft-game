@@ -82,8 +82,6 @@ contract DynamicGameFacet is ERC721Diamond {
 //     /// @notice Update Fee to mint the NFTs
 //     /// @dev Only the contract owner will be able to update the minting fee
 //     /// @param _fee The updated fee is passed by contract owner
-//     /// Ownable is used to verify the contract owner
-
     function updateFee(uint256 _fee) external {
 
         LibDiamond.enforceIsContractOwner();
@@ -96,33 +94,33 @@ contract DynamicGameFacet is ERC721Diamond {
   /// @dev The payable function requires users to pay the fee amount to mint the NFT. 
   /// @param _characterIndex The index of the character the user chooses to Mint
   
-//   function mintCharacterNFT(uint _characterIndex) external payable{
-//     require(msg.value == fee);
-//     uint256 newItemId = _tokenIds.current();
+  function mintCharacterNFT(uint _characterIndex) external payable{
+    require(msg.value == s.fee);
+    uint256 newItemId = s._tokenIds;
 
-//     _safeMint(msg.sender, newItemId);
+    _safeMint(msg.sender, newItemId);
 
-//     nftHolderAttributes[newItemId] = CharacterAttributes({
+    s.nftHolderAttributes[newItemId] = CharacterAttributes({
       
-//       characterIndex: _characterIndex,
-//       name: defaultCharacters[_characterIndex].name,
-//       imageURI: defaultCharacters[_characterIndex].imageURI,
-//       hp: defaultCharacters[_characterIndex].hp,
-//       maxHp: defaultCharacters[_characterIndex].hp,
-//       attackDamage: defaultCharacters[_characterIndex].attackDamage
+      characterIndex: _characterIndex,
+      name: s.defaultCharacters[_characterIndex].name,
+      imageURI: s.defaultCharacters[_characterIndex].imageURI,
+      hp: s.defaultCharacters[_characterIndex].hp,
+      maxHp: s.defaultCharacters[_characterIndex].hp,
+      attackDamage: s.defaultCharacters[_characterIndex].attackDamage
       
-//     });
+    });
 
-//     console.log("Minted NFT w/ tokenId %s and characterIndex %s", newItemId, _characterIndex);  
+    console.log("Minted NFT w/ tokenId %s and characterIndex %s", newItemId, _characterIndex);  
 
-//     nftHolders[msg.sender] = newItemId;
-//     totalTokens = newItemId;
+    s.nftHolders[msg.sender] = newItemId;
+    s.totalTokens = newItemId;
 
-//     _tokenIds.increment();
+    s._tokenIds += 1;
     
-//     emit CharacterNFTMinted(msg.sender, newItemId, _characterIndex);
+    emit CharacterNFTMinted(msg.sender, newItemId, _characterIndex);
 
-//   }
+  }
 
 
 }
