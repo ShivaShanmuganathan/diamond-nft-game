@@ -2,6 +2,7 @@
 pragma solidity ^0.8.0;
 
 import "./LibAppStorage.sol";
+import {CharacterAttributes, BigBoss} from "../libraries/LibAppStorage.sol";
 
 library LibERC721 {
     function _tokenOfOwnerByIndex(address owner, uint256 index) internal view returns (uint256) {
@@ -57,4 +58,21 @@ library LibERC721 {
         }
         return 0;
     }
+
+
+    function getNFTHolders(address user) internal view returns(uint256 val) {
+        
+        AppStorage storage s = LibAppStorage.diamondStorage();
+        val = s.nftHolders[user];
+
+    }
+
+    function getNFTHolderAttributes(uint256 tokenID) internal view returns(CharacterAttributes memory) {
+        
+        AppStorage storage s = LibAppStorage.diamondStorage();
+        return s.nftHolderAttributes[tokenID];
+
+    }
+
+    
 }

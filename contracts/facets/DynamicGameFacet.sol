@@ -14,6 +14,8 @@ import "../libraries/Base64.sol";
 
 import "../tokens/ERC721Diamond.sol";
 import "../libraries/LibDiamond.sol";
+import "../libraries/LibERC721.sol";
+
 import {CharacterAttributes, BigBoss} from "../libraries/LibAppStorage.sol";
 
 // Makes Debugging Easy
@@ -209,12 +211,26 @@ contract DynamicGameFacet is ERC721Diamond {
   /// @dev call function is used to transfer balance over transfer function due to security reasons
   /// Ownable is used to verify the contract owner
   function withdraw() external {
-    
+
     LibDiamond.enforceIsContractOwner();
     (bool success, ) = msg.sender.call{value: address(this).balance}("");
     require(success, "Transfer failed.");
 
   }
+
+  function nftHolders(address user) external view returns(uint256 val) {
+
+    return LibERC721.getNFTHolders(user);
+
+  }
+
+  function nftHolderAttributes(uint256 tokenID) external view returns(CharacterAttributes memory) {
+
+    return LibERC721.getNFTHolderAttributes(tokenID);
+
+  }
+
+  
 
 
 

@@ -236,14 +236,83 @@ describe('DiamondTest', async function () {
 
   });
 
+  describe('TokenURI()', function () { 
+
+    // Fetch dynamicGameFacet
+    it('Should Fetch DynamicGameFacet', async function () {
+
+      dynamicGameFacet = await ethers.getContractAt('DynamicGameFacet', diamondAddress)
+
+    });
+
+    // tokenURI function can be checked with maxHp, attackDamage
+    it('check TokenURI', async function() {
+        
+        let tokenURI = await expect(dynamicGameFacet.connect(addr1).tokenURI(1)).to.not.be.reverted;
+        // let nftAttributes = await (myEpicContract.connect(addr1).nftHolderAttributes(1));
+        console.log(tokenURI);
+
+    });
+
+  });
+
+  describe('Attack Boss()', function () { 
+
+    // Fetch dynamicGameFacet
+    it('Should Fetch DynamicGameFacet', async function () {
+
+      dynamicGameFacet = await ethers.getContractAt('DynamicGameFacet', diamondAddress)
+
+    });
+
+    // fail since account has not an NFT
+    it('should fail to attack boss since account does not have an NFT  ', async function() {
+      
+      await expect(dynamicGameFacet.connect(addr2).attackBoss()).to.be.reverted;
+
+    });
+
+    // attackBoss after minting NFT
+    it('should attack boss', async function() {
+
+      // await expect(myEpicContract.connect(owner).mintCharacterNFT(0, {value: ethers.utils.parseEther("0.1")})).to.not.be.reverted; 
+      await expect(dynamicGameFacet.connect(owner).attackBoss()).to.not.be.reverted;
+
+    });
+
+    // attackBoss & check Stats
+    it('should mint NFT & Attacks Boss, Both Boss & Player incur damages', async function() {
+      
+      await expect(dynamicGameFacet.connect(addr1).mintCharacterNFT(0, {value: ethers.utils.parseEther("0.2")})).to.not.be.reverted; 
+
+      // Player1 Stats before Attack
+      let player1_token = await dynamicGameFacet.connect(addr1).nftHolders(addr1.address);
+      let player1_char_beforeAttack = await dynamicGameFacet.connect(addr1).nftHolderAttributes(player1_token);
+      let player1_hp = transformCharacterData(player1_char_beforeAttack).hp;
+      let player1_attack = transformCharacterData(player1_char_beforeAttack).attackDamage;
+      
+      // Boss Stats After Attack
+      let beforeAttackBossTxn = await dynamicGameFacet.getBigBoss();
+      let beforeAttackResult = transformCharacterData(beforeAttackBossTxn);
+      let bossHp = beforeAttackResult.hp;
+      let boss_attack = beforeAttackResult.attackDamage;
+
+      // ATTACK NOW!
+      await expect(dynamicGameFacet.connect(addr1).attackBoss()).to.not.be.reverted;
+
+      //Check Player Hp After Attack
+      let player1_char_afterAttack = await dynamicGameFacet.connect(addr1).nftHolderAttributes(player1_token);
+      let player1_hp_afterAttack = transformCharacterData(player1_char_afterAttack).hp;
+      expect(player1_hp_afterAttack).to.equal(player1_hp - boss_attack);
+
+      // Check Boss Hp
+      let bossTxn = await dynamicGameFacet.getBigBoss();
+      let result = transformCharacterData(bossTxn).hp;
+      expect(result).to.equal(bossHp - player1_attack);
+      
+      });
+
+  });
+
   
-  
-
-
-
-
-
-  
-
-
 })
