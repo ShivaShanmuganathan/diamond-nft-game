@@ -314,5 +314,60 @@ describe('DiamondTest', async function () {
 
   });
 
-  
+  describe('checkIfUserHasNFT()', function () { 
+
+    // Fetch dynamicGameFacet
+    it('Should Fetch DynamicGameFacet', async function () {
+
+      dynamicGameFacet = await ethers.getContractAt('DynamicGameFacet', diamondAddress)
+
+    });
+
+    // checkIfUserHasNFT
+    it('should check if user has NFT', async function() {
+        
+        let result = await dynamicGameFacet.connect(owner).checkIfUserHasNFT();
+        expect((result.name).toString()).to.not.be.equal('');
+
+    });
+
+    // checkIfUserHasNFT
+    it('should fail since user does not have NFT', async function() {
+
+      let result = await dynamicGameFacet.connect(addr2).checkIfUserHasNFT();
+      expect((result.name).toString()).to.be.equal('');
+
+    });
+
+  });
+
+  describe('checkNFTOwner()', function () { 
+
+    // Fetch dynamicGameFacet
+    it('Should Fetch DynamicGameFacet', async function () {
+
+      dynamicGameFacet = await ethers.getContractAt('DynamicGameFacet', diamondAddress)
+
+    });
+    
+    // check owner of NFT
+    it('Checking the Owners of NFT', async function() {
+        
+        let totalTokens = (await dynamicGameFacet.totalTokens()).toNumber();
+        let ownersList = [];
+        console.log(totalTokens);
+        for (let i = 1; i <= totalTokens; i++) {
+          ownersList.push(await dynamicGameFacet.ownerOf(i)); 
+        }
+        
+        ownersList.forEach((element) => {
+          console.log(element);
+        });
+        
+    });
+
+
+  });
+
+
 })

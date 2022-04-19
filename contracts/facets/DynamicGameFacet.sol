@@ -166,7 +166,7 @@ contract DynamicGameFacet is ERC721Diamond {
   }
 
 
-    /// @notice Function to check whether user owns an NFT
+  /// @notice Function to check whether user owns an NFT
   /// @dev If the user has NFTs, Struct with Attributes of NFTs is returned 
   /// @dev If not, empty struct is returned when user does not have any NFTs
   /// @return A struct containing the Token's Attributes are returned 
@@ -200,7 +200,7 @@ contract DynamicGameFacet is ERC721Diamond {
   /// @notice View function to get attributes of all default characters
   /// @dev public view function that returns attributes of all default characters as struct
   /// @return A struct containing the attributes of all default characters is returned
-  function getAllDefaultCharacters() public view returns (CharacterAttributes[] memory) {
+  function getAllDefaultCharacters() external view returns (CharacterAttributes[] memory) {
 
     return s.defaultCharacters;
 
@@ -227,6 +227,12 @@ contract DynamicGameFacet is ERC721Diamond {
   function nftHolderAttributes(uint256 tokenID) external view returns(CharacterAttributes memory) {
 
     return LibERC721.getNFTHolderAttributes(tokenID);
+
+  }
+
+  function totalTokens() external view returns(uint256 val) {
+
+    val = s.totalTokens;
 
   }
 
