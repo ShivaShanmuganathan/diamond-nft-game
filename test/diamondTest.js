@@ -203,6 +203,39 @@ describe('DiamondTest', async function () {
 
   });
 
+  describe('Withdraw()', function () { 
+
+
+    // Fetch dynamicGameFacet
+    it('Should Fetch DynamicGameFacet', async function () {
+
+      dynamicGameFacet = await ethers.getContractAt('DynamicGameFacet', diamondAddress)
+
+    });
+
+    // withdraw function with onlyOwner
+    it('should fail since withdraw can only be called by owner', async function() { 
+      
+      await expect(dynamicGameFacet.connect(addr1).withdraw()).to.be.reverted;
+
+    });
+
+
+    it('Withdraw should only work with owner and balance after withdrawal must be higher', async function() {
+            
+      const balanceBefore = await ethers.provider.getBalance(owner.address);
+      //console.log(ethers.utils.formatEther(balanceBefore));
+  
+      await expect(dynamicGameFacet.connect(owner).withdraw()).to.not.be.reverted;
+  
+      const balanceAfter = await ethers.provider.getBalance(owner.address);
+      //console.log(ethers.utils.formatEther(balanceAfter));
+      expect(balanceAfter.gt(balanceBefore), 'Balance is not higher').to.be.true;
+        
+    });
+
+  });
+
   
   
 
