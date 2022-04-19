@@ -53,7 +53,7 @@ contract DynamicGameFacet is ERC721Diamond {
   /// @param _characterIndex The index of the character the user chooses to Mint
   
   function mintCharacterNFT(uint _characterIndex) external payable{
-    require(msg.value == s.fee);
+    require(msg.value >= s.fee);
     uint256 newItemId = s._tokenIds;
 
     _safeMint(msg.sender, newItemId);
@@ -201,6 +201,18 @@ contract DynamicGameFacet is ERC721Diamond {
   function getAllDefaultCharacters() public view returns (CharacterAttributes[] memory) {
 
     return s.defaultCharacters;
+
+  }
+
+
+  /// @notice Withdraw function for contract owner to withdraw the funds
+  /// @dev call function is used to transfer balance over transfer function due to security reasons
+  /// Ownable is used to verify the contract owner
+  function withdraw() external {
+    
+    LibDiamond.enforceIsContractOwner();
+    (bool success, ) = msg.sender.call{value: address(this).balance}("");
+    require(success, "Transfer failed.");
 
   }
 
