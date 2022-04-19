@@ -95,7 +95,7 @@ async function deployDiamond () {
   return diamond.address
 }
 
-// We recommend this pattern to be able to use async/await everywhere
+// We recommend this pattern to be able to use async/await every where
 // and properly handle errors.
 if (require.main === module) {
   deployDiamond()

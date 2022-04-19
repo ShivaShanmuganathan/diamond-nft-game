@@ -10,17 +10,13 @@ import "@openzeppelin/contracts/utils/Context.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";
 import "@openzeppelin/contracts/utils/introspection/ERC165.sol";
 
-
 import "../libraries/LibAppStorage.sol";
 import "../libraries/LibMeta.sol";
 import "../libraries/LibERC721.sol";
 
-
 import { IDiamondLoupe } from "../interfaces/IDiamondLoupe.sol";
 import { IDiamondCut } from "../interfaces/IDiamondCut.sol";
 import { IERC173 } from "../interfaces/IERC173.sol";
-
-
 
 abstract contract ERC721Diamond is Context, ERC165, IERC721Enumerable {
     AppStorage internal s;
