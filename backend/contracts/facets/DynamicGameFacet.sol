@@ -209,27 +209,32 @@ contract DynamicGameFacet is ERC721Diamond {
 
   }
 
-  
+  /// @notice View function to get tokenID of user
+  /// @dev external view function that returns tokenID
+  /// @return A tokenID of the user as uint
   function nftHolders(address user) external view returns(uint256 val) {
 
     return LibERC721.getNFTHolders(user);
 
   }
 
+  /// @notice View function to get characterAttributes of tokenID 
+  /// @dev external view function that returns character attributes of tokenID
+  /// @return characterAttributes of tokenID
   function nftHolderAttributes(uint256 tokenID) external view returns(CharacterAttributes memory) {
 
     return LibERC721.getNFTHolderAttributes(tokenID);
 
   }
 
+  /// @notice View function to get total number of tokens 
+  /// @dev external view function that returns total number of tokens
+  /// @return total number of tokens as uint
   function totalTokens() external view returns(uint256 val) {
 
     val = s.totalTokens;
 
   }
-
-  
-
 
 
 }
