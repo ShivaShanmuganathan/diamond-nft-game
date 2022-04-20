@@ -4,7 +4,7 @@
 
 ## Project Description 📝
 
-### Fullstack Dapp Mini Game using Dynamic NFTs 🎟
+### Fullstack Dynamic NFT Mini Game 🎮 Using Diamond Standard 💎 
 
 - Player can connect to the mini game using Metamask on Rinkeby Network
 - Players can choose Valorant Heroes and mint them as an NFT
