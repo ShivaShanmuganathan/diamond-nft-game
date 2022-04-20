@@ -144,8 +144,6 @@ describe('DiamondTest', async function () {
   
     })
 
-
-
   });
 
   describe('mintCharacterNFT()', function () { 
@@ -156,8 +154,6 @@ describe('DiamondTest', async function () {
       dynamicGameFacet = await ethers.getContractAt('DynamicGameFacet', diamondAddress)
 
     });
-
-    
 
     // Minting Characters
     it('Should Mint Characters', async function () {
@@ -175,9 +171,7 @@ describe('DiamondTest', async function () {
 
     });
 
-
   });
-  
 
   describe('updateFee()', function () { 
 
@@ -195,6 +189,7 @@ describe('DiamondTest', async function () {
 
     });
 
+    // updateFee function is accessible only by contract owner
     it('should allow only the owner to update fee', async function() {
       
         await expect(dynamicGameFacet.connect(owner).updateFee(ethers.utils.parseEther("0.2"))).to.not.be.reverted;
@@ -204,7 +199,6 @@ describe('DiamondTest', async function () {
   });
 
   describe('Withdraw()', function () { 
-
 
     // Fetch dynamicGameFacet
     it('Should Fetch DynamicGameFacet', async function () {
@@ -220,16 +214,15 @@ describe('DiamondTest', async function () {
 
     });
 
-
+    // withdraw function is accessible by owner
     it('Withdraw should only work with owner and balance after withdrawal must be higher', async function() {
             
       const balanceBefore = await ethers.provider.getBalance(owner.address);
-      //console.log(ethers.utils.formatEther(balanceBefore));
   
       await expect(dynamicGameFacet.connect(owner).withdraw()).to.not.be.reverted;
   
       const balanceAfter = await ethers.provider.getBalance(owner.address);
-      //console.log(ethers.utils.formatEther(balanceAfter));
+      
       expect(balanceAfter.gt(balanceBefore), 'Balance is not higher').to.be.true;
         
     });
