@@ -1,6 +1,6 @@
 # 💎 Diamond Dynamic NFT Mini Game 🎮
 
-### [Play On 💎🎮](https://nftbattle.netlify.app/) ⏩ https://nftbattle.netlify.app/
+### [Play On 💎🎮](https://diamond-nft-game.vercel.app/) ⏩ https://diamond-nft-game.vercel.app/
 
 ## Project Description 📝
 
