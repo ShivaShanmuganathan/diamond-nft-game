@@ -1,4 +1,4 @@
-# Final Project - 💎 Diamond Dynamic NFT Mini Game 🎮
+# 💎 Diamond Dynamic NFT Mini Game 🎮
 
 ### [Play On 💎🎮](https://nftbattle.netlify.app/) ⏩ https://nftbattle.netlify.app/
 
@@ -96,7 +96,9 @@ PRIVATE_KEY=
 [Video Link](https://www.loom.com/share/8f68f312c12046acb23962dca11fbd8a)
 
 
+## Diamond Proxy Contract Address
 
+`0x9989fEc3F6aa8D9Bf7d215FB50F67812BBfb80dd`
 
 ## Public Ethereum wallet for certification:
 
