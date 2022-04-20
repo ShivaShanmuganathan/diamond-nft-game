@@ -30,6 +30,7 @@
   },
   "dependencies": {
     "@solidstate/contracts": "^0.0.30",
+    "hardhat-abi-exporter": "^2.8.0",
     "hardhat-diamond-abi": "^2.0.0",
     "hardhat-gas-reporter": "^1.0.8",
     "solidity-coverage": "^0.7.20"

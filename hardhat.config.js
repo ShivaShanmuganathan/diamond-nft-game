@@ -3,6 +3,7 @@ require('dotenv').config();
 require('solidity-coverage')
 require("hardhat-gas-reporter");
 require("hardhat-diamond-abi");
+require('hardhat-abi-exporter');
 
 // This is a sample Hardhat task. To learn how to create your own go to
 // https://hardhat.org/guides/create-task.html
@@ -38,9 +39,12 @@ function filterDuplicateFunctions(abiElement, index, fullAbi, fullyQualifiedName
  */
  module.exports = {
   solidity: '0.8.1',
+  
   diamondAbi: {
     // (required) The name of your Diamond ABI
-    name: "dynamicGame",
+    name: "awesomeGame",
+    include: ['Facet'],
+    strict: true,
     filter: function (abiElement, index, fullAbi, fullyQualifiedName) {
 
       if(abiElement.name === "Approval"){
@@ -110,6 +114,17 @@ function filterDuplicateFunctions(abiElement, index, fullAbi, fullyQualifiedName
     },
     
   },
+
+  abiExporter: {
+    // This plugin will copy the ABI from the DarkForest artifact into our `@darkforest_eth/contracts` package as `abis/DarkForest.json`
+    path: './data/abi',
+    runOnCompile: true,
+    // We don't want additional directories created, so we explicitly set the `flat` option to `true`
+    flat: true,
+    // We **only** want to copy the DarkForest ABI (which is the Diamond ABI we generate) and the initializer ABI to this folder, so we limit the matched files with the `only` option
+    only: [':Diamond$', ':DiamondInit$'],
+  },
+
   networks: {
     // rinkeby: {
     //   url: process.env.STAGING_ALCHEMY_KEY,

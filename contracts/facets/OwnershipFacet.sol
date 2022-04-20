@@ -14,3 +14,4 @@ contract OwnershipFacet is IERC173 {
         owner_ = LibDiamond.contractOwner();
     }
 }
+
