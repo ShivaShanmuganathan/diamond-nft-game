@@ -4,6 +4,7 @@ require('solidity-coverage')
 require("hardhat-gas-reporter");
 require("hardhat-diamond-abi");
 require('hardhat-abi-exporter');
+require("@nomiclabs/hardhat-etherscan");
 
 // This is a sample Hardhat task. To learn how to create your own go to
 // https://hardhat.org/guides/create-task.html
@@ -135,4 +136,11 @@ function filterDuplicateFunctions(abiElement, index, fullAbi, fullyQualifiedName
     // }
     
   },
+
+  etherscan: {
+    // Your API key for Etherscan
+    // Obtain one at https://etherscan.io/
+    apiKey: process.env.ETHERSCAN_API_KEY
+    
+  }
 };

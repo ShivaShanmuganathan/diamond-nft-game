@@ -1,27 +1,18 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.1;
 
-// IERC721 Interface Contract 📃 to inherit from.
-import {LibERC721} from "../libraries/LibERC721.sol";
-
-// NFT contract to inherit from.
-// import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
-
-// Helper we wrote to encode in Base64
-import "../libraries/Base64.sol";
-
-// Helper functions OpenZeppelin provides.
-
+// ERC721 Token 🎫 in Diamond Standard.
 import "../tokens/ERC721Diamond.sol";
+// LibERC721 📃 Allows For Helper Functions
+import {LibERC721} from "../libraries/LibERC721.sol";
+// Helper ⛑ we wrote to encode in Base64
+import "../libraries/Base64.sol";
+// LibDiamond 💎 Allows For Diamond Storage
 import "../libraries/LibDiamond.sol";
-import "../libraries/LibERC721.sol";
-
+// Structs imported from AppStorage
 import {CharacterAttributes, BigBoss} from "../libraries/LibAppStorage.sol";
-
-// Makes Debugging Easy
+// Hardhat Console Debugging Easy
 import "hardhat/console.sol";
-
-
 
 
 // @title NFT Based Mini Game
@@ -209,7 +200,7 @@ contract DynamicGameFacet is ERC721Diamond {
 
   /// @notice Withdraw function for contract owner to withdraw the funds
   /// @dev call function is used to transfer balance over transfer function due to security reasons
-  /// Ownable is used to verify the contract owner
+  /// enforceIsContractOwner is used to verify the contract owner
   function withdraw() external {
 
     LibDiamond.enforceIsContractOwner();
@@ -218,6 +209,7 @@ contract DynamicGameFacet is ERC721Diamond {
 
   }
 
+  
   function nftHolders(address user) external view returns(uint256 val) {
 
     return LibERC721.getNFTHolders(user);
