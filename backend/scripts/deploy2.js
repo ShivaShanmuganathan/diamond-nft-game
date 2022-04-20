@@ -81,7 +81,8 @@ async function deployDiamond () {
   const DynamicGameFacet = await ethers.getContractFactory('DynamicGameFacet')
   const dynamicGameFacet = await DynamicGameFacet.deploy()
 
-  console.log('Deployed dynamicGameFacet')
+  console.log('Deployed dynamicGameFacet to ', dynamicGameFacet.address)
+
 
   let selectors = getSelectors(dynamicGameFacet);
   selectors = selectors.remove(['supportsInterface'])
@@ -89,6 +90,8 @@ async function deployDiamond () {
   addresses.push(dynamicGameFacet.address);
 
   await diamondCut.diamondCut([[dynamicGameFacet.address, FacetCutAction.Add, selectors]], ethers.constants.AddressZero, '0x');
+  console.log('Added dynamicGameFacet to Diamond ', dynamicGameFacet.address)
+
   const diamondLoupeFacet = await ethers.getContractAt('DiamondLoupeFacet', diamond.address);
   result = await diamondLoupeFacet.facetFunctionSelectors(addresses[0]);
 
